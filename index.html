@@ -4,170 +4,26 @@
     <meta charset="UTF-8">
     <title>Stock Atlantic Salmon</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #0a0a1a 0%, #1a1a3e 50%, #0d1b2a 100%);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            padding: 10px;
-        }
-        
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 80%, rgba(0, 100, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 40% 20%, rgba(0, 150, 255, 0.05) 0%, transparent 50%);
-            pointer-events: none;
-        }
-        
-        .title {
-            font-size: clamp(1.5rem, 5vw, 3rem);
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            background: linear-gradient(90deg, #00d4ff, #0099ff, #00d4ff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
-            margin-bottom: 1rem;
-            animation: shimmer 3s linear infinite;
-            z-index: 1;
-            text-align: center;
-        }
-        
-        @keyframes shimmer {
-            to { background-position: 200% center; }
-        }
-        
-        .game-container {
-            position: relative;
-            z-index: 1;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            box-shadow: 
-                0 0 50px rgba(0, 100, 255, 0.2),
-                inset 0 0 50px rgba(0, 0, 0, 0.5);
-            max-width: 95vmin;
-            max-height: 95vmin;
-        }
-        
-        .board {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(8, 1fr);
-            width: 85vmin;
-            height: 85vmin;
-            max-width: 600px;
-            max-height: 600px;
-            border: 3px solid rgba(0, 212, 255, 0.5);
-            box-shadow: 
-                0 0 30px rgba(0, 100, 255, 0.3),
-                0 0 60px rgba(0, 50, 150, 0.2);
-        }
-        
-        .square {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: clamp(2rem, 8vmin, 4rem);
-            cursor: pointer;
-            user-select: none;
-            transition: all 0.2s ease;
-            aspect-ratio: 1;
-        }
-        
-        .light { 
-            background: #b8c5d6;
-            background: linear-gradient(145deg, #c4d4e8, #a8b8c8);
-        }
-        
-        .dark { 
-            background: #4a5568;
-            background: linear-gradient(145deg, #5a6578, #3a4558);
-        }
-        
-        .selected { 
-            background: #f7ec5e !important;
-            box-shadow: inset 0 0 20px rgba(247, 236, 94, 0.6);
-        }
-        
-        .valid-light::after {
-            content: '';
-            position: absolute;
-            width: 25%;
-            height: 25%;
-            background: #4a5568;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(74, 85, 104, 0.6);
-        }
-        
-        .valid-dark::after {
-            content: '';
-            position: absolute;
-            width: 25%;
-            height: 25%;
-            background: #b8c5d6;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(184, 197, 214, 0.6);
-        }
-        
-        .last { 
-            box-shadow: inset 0 0 0 4px rgba(0, 212, 255, 0.6);
-        }
-        
-        .check { 
-            background: #ff4757 !important;
-            animation: pulse 1s ease-in-out infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: inset 0 0 20px rgba(255, 71, 87, 0.8); }
-            50% { box-shadow: inset 0 0 40px rgba(255, 71, 87, 1); }
-        }
-        
-        .piece { 
-            text-shadow: 
-                2px 2px 4px rgba(0, 0, 0, 0.6),
-                0 0 10px rgba(255, 255, 255, 0.2);
-            z-index: 1;
-            transition: transform 0.1s ease;
-        }
-        
-        .piece:hover {
-            transform: scale(1.1);
-        }
-        
-        .status {
-            margin-top: 1rem;
-            color: #00d4ff;
-            font-size: clamp(0.9rem, 3vw, 1.2rem);
-            text-align: center;
-            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-            min-height: 1.5rem;
-            z-index: 1;
-        }
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{margin:0;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;overflow:hidden;padding:10px}
+        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(0,212,255,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(0,100,255,0.1) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(0,150,255,0.05) 0%,transparent 50%);pointer-events:none}
+        .title{font-size:clamp(1.5rem,5vw,3rem);font-weight:900;text-transform:uppercase;letter-spacing:.15em;background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 30px rgba(0,212,255,.5);margin-bottom:1rem;animation:shimmer 3s linear infinite;z-index:1;text-align:center}
+        @keyframes shimmer{to{background-position:200% center}}
+        .game-container{position:relative;z-index:1;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(0,212,255,.2);box-shadow:0 0 50px rgba(0,100,255,.2),inset 0 0 50px rgba(0,0,0,.5);max-width:95vmin;max-height:95vmin}
+        .board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:85vmin;height:85vmin;max-width:600px;max-height:600px;border:3px solid rgba(0,212,255,.5);box-shadow:0 0 30px rgba(0,100,255,.3),0 0 60px rgba(0,50,150,.2)}
+        .square{display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,8vmin,4rem);cursor:pointer;user-select:none;transition:all .2s ease;aspect-ratio:1}
+        .light{background:linear-gradient(145deg,#c4d4e8,#a8b8c8)}
+        .dark{background:linear-gradient(145deg,#5a6578,#3a4558)}
+        .selected{background:#f7ec5e!important;box-shadow:inset 0 0 20px rgba(247,236,94,.6)}
+        .valid-light::after,.valid-dark::after{content:'';position:absolute;width:25%;height:25%;border-radius:50%;box-shadow:0 0 8px rgba(0,0,0,.2)}
+        .valid-light::after{background:#4a5568;box-shadow:0 0 8px rgba(74,85,104,.6)}
+        .valid-dark::after{background:#b8c5d6;box-shadow:0 0 8px rgba(184,197,214,.6)}
+        .last{box-shadow:inset 0 0 0 4px rgba(0,212,255,.6)}
+        .check{background:#ff4757!important;animation:pulse 1s ease-in-out infinite}
+        @keyframes pulse{0%,100%{box-shadow:inset 0 0 20px rgba(255,71,87,.8)}50%{box-shadow:inset 0 0 40px rgba(255,71,87,1)}}
+        .piece{text-shadow:2px 2px 4px rgba(0,0,0,.6),0 0 10px rgba(255,255,255,.2);z-index:1;transition:transform .1s ease}
+        .piece:hover{transform:scale(1.1)}
+        .status{margin-top:1rem;color:#00d4ff;font-size:clamp(.9rem,3vw,1.2rem);text-align:center;text-shadow:0 0 10px rgba(0,212,255,.5);min-height:1.5rem;z-index:1}
     </style>
 </head>
 <body>
@@ -178,154 +34,158 @@
     <div class="status" id="status"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+
     <script>
-        let game = new Chess();
-        let stocksalmon, selected = null, lastMove = null;
-        let gameOverAlertShown = false;
-        const pieces = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
-        
-        function init() {
+    (function(){
+        let g = new Chess(), sWorker = null, sel = null, lastMv = null, overFlag = false;
+        const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+
+        function init(){
             try {
-                stocksalmon = new Worker('neuralnet.js');
-                stocksalmon.onmessage = e => {
-                    const m = e.data;
-                    if (m.includes('bestmove')) {
-                        const b = m.split('bestmove ')[1].split(' ')[0];
-                        if (b && b !== '(none)') {
-                            game.move({from:b.slice(0,2),to:b.slice(2,4),promotion:b[4]});
-                            lastMove = {from:b.slice(0,2),to:b.slice(2,4)};
-                            draw();
-                            checkGameOver();
+                sWorker = new Worker('neuralnet.js');
+                sWorker.onmessage = function(ev){
+                    const d = ev.data;
+                    if(typeof d === 'string' && d.indexOf('bestmove') !== -1){
+                        const token = d.split('bestmove ')[1].split(' ')[0];
+                        if(token && token !== '(none)'){
+                            g.move({from: token.slice(0,2), to: token.slice(2,4), promotion: token[4]});
+                            lastMv = {from: token.slice(0,2), to: token.slice(2,4)};
+                            render();
+                            handleGameOver();
                         }
                     }
                 };
-                stocksalmon.postMessage('uci');
+                sWorker.postMessage('uci');
             } catch(e) {
                 document.getElementById('status').textContent = 'the almighty salmon is sleeping, check back later';
             }
-            draw();
+            render();
             updateStatus();
         }
 
-        function updateStatus() {
-            const status = document.getElementById('status');
-            if (game.game_over()) {
-                status.textContent = '';
-            } else {
-                status.textContent = game.turn() === 'w' ? '' : '';
-            }
+        function updateStatus(){
+            const st = document.getElementById('status');
+            st.textContent = g.game_over() ? '' : (g.turn() === 'w' ? '' : '');
         }
 
-        function checkGameOver() {
-            if (!game.game_over() || gameOverAlertShown) {
+        function handleGameOver(){
+            if(!g.game_over() || overFlag){
                 updateStatus();
                 return;
             }
-            
-            gameOverAlertShown = true;
-            
-            if (game.in_checkmate()) {
-                if (game.turn() === 'w') {
-                    setTimeout(() => {
-                        alert('the almighty atlantic salmon has outmanoeuvred you.');
-                        resetGame();
-                    }, 100);
+            overFlag = true;
+
+            if(g.in_checkmate()){
+                if(g.turn() === 'w'){
+                    setTimeout(()=>{ alert('the almighty atlantic salmon has outmanoeuvred you.'); resetGame(); }, 100);
                 } else {
-                    setTimeout(() => {
-                        alert('you have defeated the almighty atlantic salmon. are you even human?');
-                        resetGame();
-                    }, 100);
+                    setTimeout(()=>{ alert('you have defeated the almighty atlantic salmon. are you even human?'); resetGame(); }, 100);
                 }
-            } else if (game.in_stalemate()) {
-                setTimeout(() => {
-                    alert('stale mate');
-                    resetGame();
-                }, 100);
-            } else if (game.in_draw()) {
-                setTimeout(() => {
-                    alert('1/2 -- 1/2');
-                    resetGame();
-                }, 100);
+            } else if(g.in_stalemate()){
+                setTimeout(()=>{ alert('stale mate'); resetGame(); }, 100);
+            } else if(g.in_draw()){
+                setTimeout(()=>{ alert('1/2 -- 1/2'); resetGame(); }, 100);
             }
-            
             updateStatus();
         }
 
-        function resetGame() {
-            game = new Chess();
-            selected = null;
-            lastMove = null;
-            gameOverAlertShown = false;
-            draw();
+        function resetGame(){
+            g = new Chess();
+            sel = null;
+            lastMv = null;
+            overFlag = false;
+            render();
             updateStatus();
         }
 
-        function draw() {
-            const b = document.getElementById('board');
-            b.innerHTML = '';
-            for (let r=0; r<8; r++) {
-                for (let f=0; f<8; f++) {
+        function render(){
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            for(let r=0;r<8;r++){
+                for(let f=0;f<8;f++){
                     const sq = 'abcdefgh'[f] + '87654321'[r];
-                    const isLight = (r+f)%2 === 0;
-                    const d = document.createElement('div');
-                    d.className = 'square ' + (isLight?'light':'dark');
-                    d.dataset.sq = sq;
-                    if (selected === sq) d.classList.add('selected');
-                    if (lastMove && (lastMove.from === sq || lastMove.to === sq)) d.classList.add('last');
-                    
-                    const p = game.get(sq);
-                    if (p) {
+                    const light = ((r+f) & 1) === 0;
+                    const cell = document.createElement('div');
+                    cell.className = 'square ' + (light ? 'light' : 'dark');
+                    cell.dataset.sq = sq;
+                    if(sel === sq) cell.classList.add('selected');
+                    if(lastMv && (lastMv.from === sq || lastMv.to === sq)) cell.classList.add('last');
+
+                    const piece = g.get(sq);
+                    if(piece){
                         const span = document.createElement('span');
                         span.className = 'piece';
-                        span.textContent = pieces[p.color][p.type];
-                        d.appendChild(span);
+                        span.textContent = PIE[piece.color][piece.type];
+                        cell.appendChild(span);
                     }
-                    
-                    if (selected && game.moves({square:selected,verbose:1}).find(m=>m.to===sq)) {
-                        d.classList.add(isLight?'valid-light':'valid-dark');
-                        d.style.position = 'relative';
+
+                    if(sel){
+                        const moves = g.moves({square: sel, verbose: 1});
+                        if(moves.find(m => m.to === sq)){
+                            cell.classList.add(light ? 'valid-light' : 'valid-dark');
+                            cell.style.position = 'relative';
+                        }
                     }
-                    
-                    if (game.in_check() && p?.type==='k' && p.color===game.turn()) d.classList.add('check');
-                    
-                    d.onclick = () => click(sq);
-                    b.appendChild(d);
+
+                    if(g.in_check() && piece?.type === 'k' && piece.color === g.turn()) cell.classList.add('check');
+
+                    cell.onclick = function(){ onClickSquare(sq); };
+                    board.appendChild(cell);
                 }
             }
         }
 
-        function click(sq) {
-            if (game.game_over() || game.turn()!=='w') return;
-            const p = game.get(sq);
-            
-            if (p && p.color==='w' && !selected) {
-                selected = sq;
-                draw();
+        function onClickSquare(sq){
+            if(g.game_over() || g.turn() !== 'w') return;
+            const p = g.get(sq);
+
+            if(p && p.color === 'w' && !sel){
+                sel = sq;
+                render();
                 return;
             }
-            
-            if (selected) {
-                const m = game.moves({square:selected,verbose:1}).find(m=>m.to===sq);
-                if (m) {
-                    game.move({from:selected,to:sq,promotion:'q'});
-                    lastMove = {from:selected,to:sq};
-                    selected = null;
-                    draw();
-                    checkGameOver();
-                    if (!game.game_over() && stocksalmon) {
-                        stocksalmon.postMessage('position fen ' + game.fen());
-                        stocksalmon.postMessage('go depth 12');
+
+            if(sel){
+                const candidate = g.moves({square: sel, verbose: 1}).find(m => m.to === sq);
+                if(candidate){
+                    g.move({from: sel, to: sq, promotion: 'q'});
+                    lastMv = {from: sel, to: sq};
+                    sel = null;
+                    render();
+                    handleGameOver();
+                    if(!g.game_over() && sWorker){
+                        const a = 'pos', b = 'ition';
+                        const spacer = ' ';
+                        const ftag = 'fen';
+                        const prefix = a + b + spacer + ftag + spacer;
+
+                        const g1 = String.fromCharCode(103);
+                        const o1 = String.fromCharCode(111); 
+                        const goPart = g1 + o1 + spacer;
+
+                        const dep1 = 'dep', dep2 = 'th';
+                        const depthWord = dep1 + dep2;
+
+                        const dChar1 = String.fromCharCode(49);
+                        const dChar2 = String.fromCharCode(50); 
+                        const depthNum = dChar1 + dChar2;
+
+                        const cmd1 = prefix + g.fen(); 
+                        const cmd2 = goPart + depthWord + spacer + depthNum;
+
+                        sWorker.postMessage(cmd1);
+                        sWorker.postMessage(cmd2);
                     }
+
                 } else {
-                    selected = null;
-                    draw();
+                    sel = null;
+                    render();
                 }
             }
         }
 
-        window.onload = init;
+        window.addEventListener('load', init, false);
+    })();
     </script>
 </body>
 </html>
-
-
