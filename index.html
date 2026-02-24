@@ -168,93 +168,6 @@
             min-height: 1.5rem;
             z-index: 1;
         }
-        
-        .game-over-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-        
-        .game-over-overlay.show {
-            display: flex;
-        }
-        
-        .game-over-message {
-            background: linear-gradient(135deg, #1a1a3e, #0d1b2a);
-            padding: 3rem;
-            border-radius: 20px;
-            border: 2px solid rgba(0, 212, 255, 0.5);
-            box-shadow: 0 0 50px rgba(0, 100, 255, 0.5);
-            text-align: center;
-            animation: popIn 0.3s ease-out;
-        }
-        
-        @keyframes popIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        
-        .game-over-message h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        
-        .game-over-message p {
-            font-size: 1.2rem;
-            color: #b8c5d6;
-            margin-bottom: 2rem;
-        }
-        
-        .play-again-btn {
-            background: linear-gradient(90deg, #00d4ff, #0099ff);
-            color: #0a0a1a;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-        }
-        
-        .play-again-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
-        }
-        
-        .lose-text {
-            background: linear-gradient(90deg, #ff4757, #ff6b6b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .win-text {
-            background: linear-gradient(90deg, #00d4ff, #00ff88);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        
-        .draw-text {
-            background: linear-gradient(90deg, #ffd700, #ffaa00);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
     </style>
 </head>
 <body>
@@ -263,19 +176,12 @@
         <div class="board" id="board"></div>
     </div>
     <div class="status" id="status"></div>
-    
-    <div class="game-over-overlay" id="gameOverOverlay">
-        <div class="game-over-message">
-            <h2 id="gameOverTitle"></h2>
-            <p id="gameOverMessage"></p>
-            <button class="play-again-btn" onclick="resetGame()">Play Again</button>
-        </div>
-    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
     <script>
         let game = new Chess();
         let stocksalmon, selected = null, lastMove = null;
+        let gameOverAlertShown = false;
         const pieces = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
         
         function init() {
@@ -295,7 +201,7 @@
                 };
                 stocksalmon.postMessage('uci');
             } catch(e) {
-                document.getElementById('status').textContent = 'the AI is sleeping, check back later';
+                document.getElementById('status').textContent = 'the almighty salmon is sleeping, check back later';
             }
             draw();
             updateStatus();
@@ -311,36 +217,37 @@
         }
 
         function checkGameOver() {
-            if (!game.game_over()) {
+            if (!game.game_over() || gameOverAlertShown) {
                 updateStatus();
                 return;
             }
             
-            const overlay = document.getElementById('gameOverOverlay');
-            const title = document.getElementById('gameOverTitle');
-            const message = document.getElementById('gameOverMessage');
+            gameOverAlertShown = true;
             
             if (game.in_checkmate()) {
                 if (game.turn() === 'w') {
-                    title.textContent = 'Checkmate!';
-                    title.className = 'lose-text';
-                    message.textContent = 'the almighty atlantic salmon has outmanoeuvred you.';
+                    setTimeout(() => {
+                        alert('the almighty atlantic salmon has outmanoeuvred you.');
+                        resetGame();
+                    }, 100);
                 } else {
-                    title.textContent = 'Victory!';
-                    title.className = 'win-text';
-                    message.textContent = 'you have defeated the almighty atlantic salmon. are you even human?';
+                    setTimeout(() => {
+                        alert('you have defeated the almighty atlantic salmon. are you even human?');
+                        resetGame();
+                    }, 100);
                 }
             } else if (game.in_stalemate()) {
-                title.textContent = 'stale mate';
-                title.className = 'draw-text';
-                message.textContent = 'draw';
+                setTimeout(() => {
+                    alert('stale mate');
+                    resetGame();
+                }, 100);
             } else if (game.in_draw()) {
-                title.textContent = '1/2 -- 1/2';
-                title.className = 'draw-text';
-                message.textContent = 'draw';
+                setTimeout(() => {
+                    alert('1/2 -- 1/2');
+                    resetGame();
+                }, 100);
             }
             
-            overlay.classList.add('show');
             updateStatus();
         }
 
@@ -348,7 +255,7 @@
             game = new Chess();
             selected = null;
             lastMove = null;
-            document.getElementById('gameOverOverlay').classList.remove('show');
+            gameOverAlertShown = false;
             draw();
             updateStatus();
         }
@@ -407,7 +314,7 @@
                     checkGameOver();
                     if (!game.game_over() && stocksalmon) {
                         stocksalmon.postMessage('position fen ' + game.fen());
-                        stocksalmon.postMessage('go depth 12');
+                        stocksalmon.postMessage('go depth 10');
                     }
                 } else {
                     selected = null;
@@ -419,6 +326,4 @@
         window.onload = init;
     </script>
 </body>
-
 </html>
-
