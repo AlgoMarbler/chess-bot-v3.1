@@ -314,7 +314,7 @@
                     checkGameOver();
                     if (!game.game_over() && stocksalmon) {
                         stocksalmon.postMessage('position fen ' + game.fen());
-                        stocksalmon.postMessage('go depth 14');
+                        stocksalmon.postMessage('go depth 12');
                     }
                 } else {
                     selected = null;
@@ -327,4 +327,5 @@
     </script>
 </body>
 </html>
+
 
