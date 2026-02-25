@@ -42,6 +42,17 @@
         let g = new Chess(), sWorker = null, sel = null, lastMv = null, overFlag = false, moveCount = 0;
         const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 
+        function getAdaptiveDepth(){
+            const fen = g.fen();
+            const pieceCount = (fen.match(/[prnbqkPRNBQK]/g) || []).length;
+            if(pieceCount >= 24) return 10;
+            if(pieceCount >= 21) return 11;
+            if(pieceCount >= 18) return 12;
+            if(pieceCount >= 12) return 13;
+            if(pieceCount >= 7) return 15;
+            return 16;
+        }
+
         function init(){
             try {
                 sWorker = new Worker('neuralnet.js');
@@ -167,8 +178,9 @@
                                 handleGameOver();
                             }, 300);
                         } else if(sWorker){
+                            const depth = getAdaptiveDepth();
                             sWorker.postMessage('position fen ' + g.fen());
-                            sWorker.postMessage('go depth 12');
+                            sWorker.postMessage('go depth ' + depth);
                         }
                     }
                 } else {
