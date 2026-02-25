@@ -45,12 +45,12 @@
         function getAdaptiveDepth(){
             const fen = g.fen();
             const pieceCount = (fen.match(/[prnbqkPRNBQK]/g) || []).length;
-            if(pieceCount >= 24) return 10;
-            if(pieceCount >= 21) return 11;
-            if(pieceCount >= 18) return 12;
-            if(pieceCount >= 12) return 13;
-            if(pieceCount >= 7) return 15;
-            return 16;
+            if(pieceCount >= 24) return 11;
+            if(pieceCount >= 21) return 12;
+            if(pieceCount >= 18) return 13;
+            if(pieceCount >= 12) return 15;
+            if(pieceCount >= 7) return 16;
+            return 17;
         }
 
         function init(){
@@ -195,3 +195,4 @@
     </script>
 </body>
 </html>
+
