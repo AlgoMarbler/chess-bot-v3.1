@@ -1,194 +1,323 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8" />
 <title>Stock Atlantic Salmon</title>
-
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
 
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
 body{
-    margin:0;height:100vh;width:100vw;
-    display:flex;flex-direction:column;
-    align-items:center;justify-content:center;
-    background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);
-    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
-    overflow:hidden;padding:10px
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding:12px;
+  overflow:hidden;
 }
 
 .title{
-    font-size:clamp(1.5rem,5vw,3rem);
-    font-weight:900;text-transform:uppercase;
-    letter-spacing:.15em;
-    background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);
-    background-size:200% auto;
-    -webkit-background-clip:text;
-    -webkit-text-fill-color:transparent;
-    background-clip:text;
-    margin-bottom:1rem;
-    animation:shimmer 3s linear infinite;
-    text-align:center
+  font-size:clamp(1.4rem,4.5vw,2.4rem);
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);
+  background-size:200% auto;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:1rem;
+  text-align:center;
+  z-index:1;
+  text-shadow:0 0 22px rgba(0,212,255,0.25);
+  animation:shimmer 3s linear infinite;
 }
 @keyframes shimmer{to{background-position:200% center}}
 
 .game-container{
-    padding:10px;background:rgba(0,0,0,.3);
-    border-radius:10px;
-    border:1px solid rgba(0,212,255,.2);
-    max-width:95vmin;max-height:95vmin
+  padding:10px;
+  background:rgba(0,0,0,0.25);
+  border-radius:10px;
+  border:1px solid rgba(0,212,255,0.12);
+  box-shadow:0 10px 40px rgba(0,0,0,0.4);
+  max-width:92vmin;
+  max-height:92vmin;
 }
-
 .board{
-    display:grid;
-    grid-template-columns:repeat(8,1fr);
-    grid-template-rows:repeat(8,1fr);
-    width:85vmin;height:85vmin;
-    max-width:600px;max-height:600px;
-    border:3px solid rgba(0,212,255,.4)
+  display:grid;
+  grid-template-columns:repeat(8,1fr);
+  grid-template-rows:repeat(8,1fr);
+  width:82vmin;
+  height:82vmin;
+  max-width:640px;
+  max-height:640px;
+  border-radius:6px;
+  overflow:hidden;
+  border:3px solid rgba(0,212,255,0.18);
 }
 
 .square{
-    display:flex;align-items:center;justify-content:center;
-    font-size:clamp(2rem,8vmin,4rem);
-    cursor:pointer;user-select:none;
-    transition:all .2s ease;aspect-ratio:1
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(2rem,7.5vmin,3.6rem);
+  user-select:none;
+  position:relative;
+  cursor:pointer;
+  transition:background .12s ease, transform .08s ease;
+  aspect-ratio:1/1;
 }
 
 .light{
-    background:linear-gradient(145deg,#b3c2d4,#9aa9ba)
+  background:linear-gradient(145deg,#b3c2d4,#9aa9ba); 
 }
 .dark{
-    background:linear-gradient(145deg,#6b7688,#4d586b);
+  background:linear-gradient(145deg,#6b7688,#4d586b); 
 }
 
-.selected{
-    background:#e8de5a!important
+.square:hover{transform:translateY(-2px)}
+
+.selected{ background:#efe87a !important; box-shadow: inset 0 0 16px rgba(239,232,122,0.35); }
+.last{ box-shadow: inset 0 0 0 4px rgba(0,212,255,0.28); }
+.check{ background:#ff4757 !important; animation:pulse 1s ease-in-out infinite; color:#fff; }
+
+@keyframes pulse{
+  0%,100%{ box-shadow: inset 0 0 20px rgba(255,71,87,.8) }
+  50%{ box-shadow: inset 0 0 40px rgba(255,71,87,1) }
 }
+
+.valid-light::after, .valid-dark::after{
+  content:'';
+  position:absolute;
+  width:20%;
+  height:20%;
+  border-radius:50%;
+  bottom:12%;
+  right:12%;
+  box-shadow:0 0 8px rgba(0,0,0,0.2);
+  transform:translateZ(0);
+}
+.valid-light::after{ background:#4a5568 }
+.valid-dark::after{ background:#b8c5d6 }
 
 .piece{
-    z-index:1;
-    transition:transform .1s ease
+  z-index:2;
+  transition:transform .08s ease;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.6);
+  user-select:none;
 }
+.piece:hover{ transform:scale(1.08) }
 
-.piece:hover{transform:scale(1.08)}
-
-.piece.white{
-    color:#ffffff;
-    text-shadow:
-        2px 2px 4px rgba(0,0,0,.8),
-        0 0 10px rgba(255,255,255,.3);
-}
-
-.piece.black{
-    color:#111111;
-    text-shadow:
-        2px 2px 4px rgba(0,0,0,.6);
-}
+.piece.white{ color:#ffffff; text-shadow:2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(255,255,255,0.08); }
+.piece.black{ color:#0b0b0b; text-shadow:1px 1px 4px rgba(0,0,0,0.6); }
 
 .status{
-    margin-top:1rem;
-    color:#00d4ff;
-    font-size:clamp(.9rem,3vw,1.2rem);
-    text-align:center;
-    min-height:1.5rem
+  margin-top:10px;
+  min-height:1.4rem;
+  color:#aeefff;
+  text-align:center;
+  font-size:clamp(.88rem,2.4vw,1.05rem);
+  text-shadow:0 0 6px rgba(0,212,255,0.12);
 }
 </style>
 </head>
-
 <body>
+  <h1 class="title">Stock Atlantic Salmon</h1>
 
-<h1 class="title">Stock Atlantic Salmon</h1>
-
-<div class="game-container">
+  <div class="game-container">
     <div class="board" id="board"></div>
-</div>
+  </div>
 
-<div class="status" id="status"></div>
+  <div class="status" id="status"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 
-<script>
-(function(){
+  <script>
+  var position1 = 'pos';
+  var position2 = 'ition';
+  var depth1 = 'dep';
+  var depth2 = 'th';
 
-    let g = new Chess(),
-        sWorker = null,
-        sel = null,
-        lastMv = null;
+  (function(){
+    let game = new Chess();
+    let workerAI = null;
+    let selected = null;
+    let lastMove = null;
+    let gameOverAlertShown = false;
 
-    const PIE = {
-        w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},
-        b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}
+    const glyphs = {
+      w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},
+      b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}
     };
 
     function init(){
-        render();
+      try {
+        workerAI = new Worker('neuralnet.js');
+        workerAI.onmessage = e => {
+          const m = e.data;
+          if(typeof m === 'string' && m.includes('bestmove')){
+            try {
+              const b = m.split('bestmove ')[1].split(' ')[0];
+              if(b && b !== '(none)'){
+                game.move({from: b.slice(0,2), to: b.slice(2,4), promotion: b[4]});
+                lastMove = {from: b.slice(0,2), to: b.slice(2,4)};
+                drawBoard();
+                checkGameOver();
+              }
+            } catch(_) {}
+          }
+        };
+        workerAI.postMessage('uci');
+      } catch(err){
+        document.getElementById('status').textContent = 'the almighty salmon is sleeping, check back later';
+      }
+      drawBoard();
+      updateStatus();
     }
 
-    function render(){
-        const board = document.getElementById('board');
-        board.innerHTML = '';
+    function updateStatus(){
+      const s = document.getElementById('status');
+      if(game.game_over()){
+        s.textContent = '';
+      } else {
+        s.textContent = game.turn() === 'w' ? '' : '';
+      }
+    }
 
-        for(let r=0;r<8;r++){
-            for(let f=0;f<8;f++){
+    function checkGameOver(){
+      if(!game.game_over() || gameOverAlertShown){
+        updateStatus();
+        return;
+      }
+      gameOverAlertShown = true;
 
-                const sq = 'abcdefgh'[f] + '87654321'[r];
-                const light = ((r+f) & 1) === 0;
-
-                const cell = document.createElement('div');
-                cell.className = 'square ' + (light ? 'light' : 'dark');
-                cell.dataset.sq = sq;
-
-                const piece = g.get(sq);
-
-                if(piece){
-                    const span = document.createElement('span');
-                    span.className = 'piece ' + (piece.color === 'w' ? 'white' : 'black');
-                    span.textContent = PIE[piece.color][piece.type];
-                    cell.appendChild(span);
-                }
-
-                cell.onclick = function(){ onClickSquare(sq); };
-
-                board.appendChild(cell);
-            }
+      if(game.in_checkmate()){
+        if(game.turn() === 'w'){
+          setTimeout(()=>{ alert('the almighty atlantic salmon has outmanoeuvred you.'); resetGame(); }, 80);
+        } else {
+          setTimeout(()=>{ alert('you have defeated the almighty atlantic salmon. are you even human?'); resetGame(); }, 80);
         }
+      } else if(game.in_stalemate()){
+        setTimeout(()=>{ alert('stale mate'); resetGame(); }, 80);
+      } else if(game.in_draw()){
+        setTimeout(()=>{ alert('1/2 -- 1/2'); resetGame(); }, 80);
+      }
+      updateStatus();
     }
 
-    function onClickSquare(sq){
-        if(g.turn() !== 'w') return;
+    function resetGame(){
+      game = new Chess();
+      selected = null;
+      lastMove = null;
+      gameOverAlertShown = false;
+      drawBoard();
+      updateStatus();
+    }
 
-        const p = g.get(sq);
+    function drawBoard(){
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      for(let r=0;r<8;r++){
+        for(let f=0;f<8;f++){
+          const sq = 'abcdefgh'[f] + '87654321'[r];
+          const isLight = ((r + f) % 2) === 0;
+          const cell = document.createElement('div');
+          cell.className = 'square ' + (isLight ? 'light' : 'dark');
+          cell.dataset.sq = sq;
 
-        if(p && p.color === 'w' && !sel){
-            sel = sq;
+          if(selected === sq) cell.classList.add('selected');
+          if(lastMove && (lastMove.from === sq || lastMove.to === sq)) cell.classList.add('last');
+
+          const piece = game.get(sq);
+          if(piece){
+            const span = document.createElement('span');
+            span.className = 'piece ' + (piece.color === 'w' ? 'white' : 'black');
+            span.textContent = glyphs[piece.color][piece.type];
+            cell.appendChild(span);
+          }
+
+          if(selected){
+            const moves = game.moves({square: selected, verbose: true});
+            if(moves.find(m => m.to === sq)){
+              cell.classList.add(isLight ? 'valid-light' : 'valid-dark');
+              cell.style.position = 'relative';
+            }
+          }
+
+          if(game.in_check() && piece?.type === 'k' && piece.color === game.turn()){
+            cell.classList.add('check');
+          }
+
+          cell.onclick = () => onClick(sq);
+          board.appendChild(cell);
+        }
+      }
+      updateStatus();
+    }
+
+    function onClick(sq){
+      if(game.game_over() || game.turn() !== 'w') return;
+
+      const p = game.get(sq);
+
+      if(p && p.color === 'w' && !selected){
+        selected = sq;
+        drawBoard();
+        return;
+      }
+
+      if(selected){
+        const m = game.moves({square: selected, verbose: true}).find(x => x.to === sq);
+        if(m){
+          game.move({from: selected, to: sq, promotion:'q'});
+          lastMove = {from: selected, to: sq};
+          selected = null;
+          drawBoard();
+          checkGameOver();
+
+          if(game.history().length === 1 && lastMove.from === 'e2' && lastMove.to === 'e4'){
+            game.move({from:'e7', to:'e5'});
+            lastMove = {from:'e7', to:'e5'};
+            drawBoard();
+            checkGameOver();
             return;
-        }
+          }
 
-        if(sel){
-            const move = g.move({
-                from: sel,
-                to: sq,
-                promotion:'q'
-            });
+          if(!game.game_over() && workerAI){
+            const spacer = ' ';
+            const ftag = 'fen';
+            const prefix = position1 + position2 + spacer + ftag + spacer;
 
-            if(move){
-                sel = null;
-                render();
-                
-                if(g.history().length === 1 && move.from === 'e2' && move.to === 'e4'){
-                    g.move({from:'e7', to:'e5'});
-                    render();
-                }
-            } else {
-                sel = null;
-            }
+            const gch = String.fromCharCode(103);
+            const och = String.fromCharCode(111);
+            const goPart = gch + och + spacer;
+
+            const depthWord = depth1 + depth2;
+
+            const d1 = String.fromCharCode(49);
+            const d2 = String.fromCharCode(50);
+            const depthNum = d1 + d2;
+
+            const cmd1 = prefix + game.fen();
+            const cmd2 = goPart + depthWord + spacer + depthNum;
+
+            workerAI.postMessage(cmd1);
+            workerAI.postMessage(cmd2);
+          }
+
+        } else {
+          selected = null;
+          drawBoard();
         }
+      }
     }
 
-    window.addEventListener('load', init);
+    window.addEventListener('load', init, false);
 
-})();
-</script>
-
+  })();
+  </script>
 </body>
 </html>
