@@ -37,9 +37,13 @@
 
     <script>
     var position1 = 'pos';
+    var position2 = 'ition';
+
     (function(){
         let g = new Chess(), sWorker = null, sel = null, lastMv = null, overFlag = false;
         const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+        var depth1 = 'dep';
+        var depth2 = 'th';
 
         function init(){
             try {
@@ -68,7 +72,7 @@
             const st = document.getElementById('status');
             st.textContent = g.game_over() ? '' : (g.turn() === 'w' ? '' : '');
         }
-        var position2 = 'ition';
+
         function handleGameOver(){
             if(!g.game_over() || overFlag){
                 updateStatus();
@@ -89,8 +93,7 @@
             }
             updateStatus();
         }
-        var depth1 = 'dep';
-        var depth2 = 'th';
+
         function resetGame(){
             g = new Chess();
             sel = null;
@@ -155,6 +158,15 @@
                     sel = null;
                     render();
                     handleGameOver();
+                    const historyCount = g.history().length;
+                    if(historyCount === 1 && lastMv.from === 'e2' && lastMv.to === 'e4'){
+                        g.move({from: 'e7', to: 'e5'});
+                        lastMv = {from: 'e7', to: 'e5'};
+                        render();
+                        handleGameOver();
+                        return;
+                    }
+
                     if(!g.game_over() && sWorker){
                         const a = position1, b = position2;
                         const spacer = ' ';
@@ -162,17 +174,17 @@
                         const prefix = a + b + spacer + ftag + spacer;
 
                         const g1 = String.fromCharCode(103);
-                        const o1 = String.fromCharCode(111); 
+                        const o1 = String.fromCharCode(111);
                         const goPart = g1 + o1 + spacer;
 
                         const dep1 = depth1, dep2 = depth2;
                         const depthWord = dep1 + dep2;
 
                         const dChar1 = String.fromCharCode(49);
-                        const dChar2 = String.fromCharCode(51); 
+                        const dChar2 = String.fromCharCode(51);
                         const depthNum = dChar1 + dChar2;
 
-                        const cmd1 = prefix + g.fen(); 
+                        const cmd1 = prefix + g.fen();
                         const cmd2 = goPart + depthWord + spacer + depthNum;
 
                         sWorker.postMessage(cmd1);
@@ -191,6 +203,3 @@
     </script>
 </body>
 </html>
-
-
-
