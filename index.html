@@ -1,206 +1,194 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Stock Atlantic Salmon</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{margin:0;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;overflow:hidden;padding:10px}
-        body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(0,212,255,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(0,100,255,0.1) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(0,150,255,0.05) 0%,transparent 50%);pointer-events:none}
-        .title{font-size:clamp(1.5rem,5vw,3rem);font-weight:900;text-transform:uppercase;letter-spacing:.15em;background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 30px rgba(0,212,255,.5);margin-bottom:1rem;animation:shimmer 3s linear infinite;z-index:1;text-align:center}
-        @keyframes shimmer{to{background-position:200% center}}
-        .game-container{position:relative;z-index:1;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(0,212,255,.2);box-shadow:0 0 50px rgba(0,100,255,.2),inset 0 0 50px rgba(0,0,0,.5);max-width:95vmin;max-height:95vmin}
-        .board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:85vmin;height:85vmin;max-width:600px;max-height:600px;border:3px solid rgba(0,212,255,.5);box-shadow:0 0 30px rgba(0,100,255,.3),0 0 60px rgba(0,50,150,.2)}
-        .square{display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,8vmin,4rem);cursor:pointer;user-select:none;transition:all .2s ease;aspect-ratio:1}
-        .light{background:linear-gradient(145deg,#c4d4e8,#a8b8c8)}
-        .dark{background:linear-gradient(145deg,#5a6578,#3a4558)}
-        .selected{background:#f7ec5e!important;box-shadow:inset 0 0 20px rgba(247,236,94,.6)}
-        .valid-light::after,.valid-dark::after{content:'';position:absolute;width:25%;height:25%;border-radius:50%;box-shadow:0 0 8px rgba(0,0,0,.2)}
-        .valid-light::after{background:#4a5568;box-shadow:0 0 8px rgba(74,85,104,.6)}
-        .valid-dark::after{background:#b8c5d6;box-shadow:0 0 8px rgba(184,197,214,.6)}
-        .last{box-shadow:inset 0 0 0 4px rgba(0,212,255,.6)}
-        .check{background:#ff4757!important;animation:pulse 1s ease-in-out infinite}
-        @keyframes pulse{0%,100%{box-shadow:inset 0 0 20px rgba(255,71,87,.8)}50%{box-shadow:inset 0 0 40px rgba(255,71,87,1)}}
-        .piece{text-shadow:2px 2px 4px rgba(0,0,0,.6),0 0 10px rgba(255,255,255,.2);z-index:1;transition:transform .1s ease}
-        .piece:hover{transform:scale(1.1)}
-        .status{margin-top:1rem;color:#00d4ff;font-size:clamp(.9rem,3vw,1.2rem);text-align:center;text-shadow:0 0 10px rgba(0,212,255,.5);min-height:1.5rem;z-index:1}
-    </style>
+<meta charset="UTF-8">
+<title>Stock Atlantic Salmon</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    margin:0;height:100vh;width:100vw;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    overflow:hidden;padding:10px
+}
+
+.title{
+    font-size:clamp(1.5rem,5vw,3rem);
+    font-weight:900;text-transform:uppercase;
+    letter-spacing:.15em;
+    background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);
+    background-size:200% auto;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    background-clip:text;
+    margin-bottom:1rem;
+    animation:shimmer 3s linear infinite;
+    text-align:center
+}
+@keyframes shimmer{to{background-position:200% center}}
+
+.game-container{
+    padding:10px;background:rgba(0,0,0,.3);
+    border-radius:10px;
+    border:1px solid rgba(0,212,255,.2);
+    max-width:95vmin;max-height:95vmin
+}
+
+.board{
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    grid-template-rows:repeat(8,1fr);
+    width:85vmin;height:85vmin;
+    max-width:600px;max-height:600px;
+    border:3px solid rgba(0,212,255,.4)
+}
+
+.square{
+    display:flex;align-items:center;justify-content:center;
+    font-size:clamp(2rem,8vmin,4rem);
+    cursor:pointer;user-select:none;
+    transition:all .2s ease;aspect-ratio:1
+}
+
+.light{
+    background:linear-gradient(145deg,#b3c2d4,#9aa9ba)
+}
+.dark{
+    background:linear-gradient(145deg,#6b7688,#4d586b);
+}
+
+.selected{
+    background:#e8de5a!important
+}
+
+.piece{
+    z-index:1;
+    transition:transform .1s ease
+}
+
+.piece:hover{transform:scale(1.08)}
+
+.piece.white{
+    color:#ffffff;
+    text-shadow:
+        2px 2px 4px rgba(0,0,0,.8),
+        0 0 10px rgba(255,255,255,.3);
+}
+
+.piece.black{
+    color:#111111;
+    text-shadow:
+        2px 2px 4px rgba(0,0,0,.6);
+}
+
+.status{
+    margin-top:1rem;
+    color:#00d4ff;
+    font-size:clamp(.9rem,3vw,1.2rem);
+    text-align:center;
+    min-height:1.5rem
+}
+</style>
 </head>
+
 <body>
-    <h1 class="title">Stock Atlantic Salmon</h1>
-    <div class="game-container">
-        <div class="board" id="board"></div>
-    </div>
-    <div class="status" id="status"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+<h1 class="title">Stock Atlantic Salmon</h1>
 
-    <script>
-    var position1 = 'pos';
-    var position2 = 'ition';
+<div class="game-container">
+    <div class="board" id="board"></div>
+</div>
 
-    (function(){
-        let g = new Chess(), sWorker = null, sel = null, lastMv = null, overFlag = false;
-        const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
-        var depth1 = 'dep';
-        var depth2 = 'th';
+<div class="status" id="status"></div>
 
-        function init(){
-            try {
-                sWorker = new Worker('neuralnet.js');
-                sWorker.onmessage = function(ev){
-                    const d = ev.data;
-                    if(typeof d === 'string' && d.indexOf('bestmove') !== -1){
-                        const token = d.split('bestmove ')[1].split(' ')[0];
-                        if(token && token !== '(none)'){
-                            g.move({from: token.slice(0,2), to: token.slice(2,4), promotion: token[4]});
-                            lastMv = {from: token.slice(0,2), to: token.slice(2,4)};
-                            render();
-                            handleGameOver();
-                        }
-                    }
-                };
-                sWorker.postMessage('uci');
-            } catch(e) {
-                document.getElementById('status').textContent = 'the almighty salmon is sleeping, check back later';
-            }
-            render();
-            updateStatus();
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
 
-        function updateStatus(){
-            const st = document.getElementById('status');
-            st.textContent = g.game_over() ? '' : (g.turn() === 'w' ? '' : '');
-        }
+<script>
+(function(){
 
-        function handleGameOver(){
-            if(!g.game_over() || overFlag){
-                updateStatus();
-                return;
-            }
-            overFlag = true;
+    let g = new Chess(),
+        sWorker = null,
+        sel = null,
+        lastMv = null;
 
-            if(g.in_checkmate()){
-                if(g.turn() === 'w'){
-                    setTimeout(()=>{ alert('the almighty atlantic salmon has outmanoeuvred you.'); resetGame(); }, 100);
-                } else {
-                    setTimeout(()=>{ alert('you have defeated the almighty atlantic salmon. are you even human?'); resetGame(); }, 100);
+    const PIE = {
+        w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'},
+        b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}
+    };
+
+    function init(){
+        render();
+    }
+
+    function render(){
+        const board = document.getElementById('board');
+        board.innerHTML = '';
+
+        for(let r=0;r<8;r++){
+            for(let f=0;f<8;f++){
+
+                const sq = 'abcdefgh'[f] + '87654321'[r];
+                const light = ((r+f) & 1) === 0;
+
+                const cell = document.createElement('div');
+                cell.className = 'square ' + (light ? 'light' : 'dark');
+                cell.dataset.sq = sq;
+
+                const piece = g.get(sq);
+
+                if(piece){
+                    const span = document.createElement('span');
+                    span.className = 'piece ' + (piece.color === 'w' ? 'white' : 'black');
+                    span.textContent = PIE[piece.color][piece.type];
+                    cell.appendChild(span);
                 }
-            } else if(g.in_stalemate()){
-                setTimeout(()=>{ alert('stale mate'); resetGame(); }, 100);
-            } else if(g.in_draw()){
-                setTimeout(()=>{ alert('1/2 -- 1/2'); resetGame(); }, 100);
-            }
-            updateStatus();
-        }
 
-        function resetGame(){
-            g = new Chess();
-            sel = null;
-            lastMv = null;
-            overFlag = false;
-            render();
-            updateStatus();
-        }
+                cell.onclick = function(){ onClickSquare(sq); };
 
-        function render(){
-            const board = document.getElementById('board');
-            board.innerHTML = '';
-            for(let r=0;r<8;r++){
-                for(let f=0;f<8;f++){
-                    const sq = 'abcdefgh'[f] + '87654321'[r];
-                    const light = ((r+f) & 1) === 0;
-                    const cell = document.createElement('div');
-                    cell.className = 'square ' + (light ? 'light' : 'dark');
-                    cell.dataset.sq = sq;
-                    if(sel === sq) cell.classList.add('selected');
-                    if(lastMv && (lastMv.from === sq || lastMv.to === sq)) cell.classList.add('last');
-
-                    const piece = g.get(sq);
-                    if(piece){
-                        const span = document.createElement('span');
-                        span.className = 'piece';
-                        span.textContent = PIE[piece.color][piece.type];
-                        cell.appendChild(span);
-                    }
-
-                    if(sel){
-                        const moves = g.moves({square: sel, verbose: 1});
-                        if(moves.find(m => m.to === sq)){
-                            cell.classList.add(light ? 'valid-light' : 'valid-dark');
-                            cell.style.position = 'relative';
-                        }
-                    }
-
-                    if(g.in_check() && piece?.type === 'k' && piece.color === g.turn()) cell.classList.add('check');
-
-                    cell.onclick = function(){ onClickSquare(sq); };
-                    board.appendChild(cell);
-                }
+                board.appendChild(cell);
             }
         }
+    }
 
-        function onClickSquare(sq){
-            if(g.game_over() || g.turn() !== 'w') return;
-            const p = g.get(sq);
+    function onClickSquare(sq){
+        if(g.turn() !== 'w') return;
 
-            if(p && p.color === 'w' && !sel){
-                sel = sq;
+        const p = g.get(sq);
+
+        if(p && p.color === 'w' && !sel){
+            sel = sq;
+            return;
+        }
+
+        if(sel){
+            const move = g.move({
+                from: sel,
+                to: sq,
+                promotion:'q'
+            });
+
+            if(move){
+                sel = null;
                 render();
-                return;
-            }
-
-            if(sel){
-                const candidate = g.moves({square: sel, verbose: 1}).find(m => m.to === sq);
-                if(candidate){
-                    g.move({from: sel, to: sq, promotion: 'q'});
-                    lastMv = {from: sel, to: sq};
-                    sel = null;
-                    render();
-                    handleGameOver();
-                    const historyCount = g.history().length;
-                    if(historyCount === 1 && lastMv.from === 'e2' && lastMv.to === 'e4'){
-                        g.move({from: 'e7', to: 'e5'});
-                        lastMv = {from: 'e7', to: 'e5'};
-                        render();
-                        handleGameOver();
-                        return;
-                    }
-
-                    if(!g.game_over() && sWorker){
-                        const a = position1, b = position2;
-                        const spacer = ' ';
-                        const ftag = 'fen';
-                        const prefix = a + b + spacer + ftag + spacer;
-
-                        const g1 = String.fromCharCode(103);
-                        const o1 = String.fromCharCode(111);
-                        const goPart = g1 + o1 + spacer;
-
-                        const dep1 = depth1, dep2 = depth2;
-                        const depthWord = dep1 + dep2;
-
-                        const dChar1 = String.fromCharCode(49);
-                        const dChar2 = String.fromCharCode(50);
-                        const depthNum = dChar1 + dChar2;
-
-                        const cmd1 = prefix + g.fen();
-                        const cmd2 = goPart + depthWord + spacer + depthNum;
-
-                        sWorker.postMessage(cmd1);
-                        sWorker.postMessage(cmd2);
-                    }
-
-                } else {
-                    sel = null;
+                
+                if(g.history().length === 1 && move.from === 'e2' && move.to === 'e4'){
+                    g.move({from:'e7', to:'e5'});
                     render();
                 }
+            } else {
+                sel = null;
             }
         }
+    }
 
-        window.addEventListener('load', init, false);
-    })();
-    </script>
+    window.addEventListener('load', init);
+
+})();
+</script>
+
 </body>
 </html>
-
