@@ -9,7 +9,8 @@
         body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(0,212,255,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(0,100,255,0.1) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(0,150,255,0.05) 0%,transparent 50%);pointer-events:none}
         .title{font-size:clamp(1.5rem,5vw,3rem);font-weight:900;text-transform:uppercase;letter-spacing:.15em;background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 30px rgba(0,212,255,.5);margin-bottom:1rem;animation:shimmer 3s linear infinite;z-index:1;text-align:center}
         @keyframes shimmer{to{background-position:200% center}}
-        .game-container{position:relative;z-index:1;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(0,212,255,.2);box-shadow:0 0 50px rgba(0,100,255,.2),inset 0 0 50px rgba(0,0,0,.5);max-width:95vmin;max-height:95vmin}
+        .game-wrapper{display:flex;align-items:center;gap:20px;z-index:1}
+        .game-container{position:relative;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(0,212,255,.2);box-shadow:0 0 50px rgba(0,100,255,.2),inset 0 0 50px rgba(0,0,0,.5)}
         .board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:85vmin;height:85vmin;max-width:600px;max-height:600px;border:3px solid rgba(0,212,255,.5);box-shadow:0 0 30px rgba(0,100,255,.3),0 0 60px rgba(0,50,150,.2)}
         .square{display:flex;align-items:center;justify-content:center;font-size:clamp(2rem,8vmin,4rem);cursor:pointer;user-select:none;transition:all .2s ease;aspect-ratio:1}
         .light{background:linear-gradient(145deg,#b0c0d0,#98a8b8)}
@@ -26,12 +27,55 @@
         .piece-white{color:#ffffff;text-shadow:2px 2px 4px rgba(0,0,0,.8),0 0 15px rgba(255,255,255,.3)}
         .piece-black{color:#1a1a1a;text-shadow:1px 1px 2px rgba(255,255,255,.2),0 0 10px rgba(0,0,0,.4)}
         .status{margin-top:1rem;color:#00d4ff;font-size:clamp(.9rem,3vw,1.2rem);text-align:center;text-shadow:0 0 10px rgba(0,212,255,.5);min-height:1.5rem;z-index:1}
+        .difficulty-panel{background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.3);border-radius:10px;padding:15px;box-shadow:0 0 30px rgba(0,100,255,.2);transition:opacity .3s ease}
+        .difficulty-panel.locked{opacity:.5;pointer-events:none}
+        .difficulty-title{color:#00d4ff;font-size:1.1rem;font-weight:bold;text-align:center;margin-bottom:15px;text-transform:uppercase;letter-spacing:0.1em;text-shadow:0 0 10px rgba(0,212,255,.5)}
+        .difficulty-row{display:flex;align-items:center;gap:10px;margin:6px 0}
+        .difficulty-btn{width:45px;height:45px;border:2px solid rgba(0,212,255,.5);background:rgba(0,0,0,.3);color:#00d4ff;font-size:1.2rem;font-weight:bold;cursor:pointer;border-radius:8px;transition:all .3s ease;flex-shrink:0}
+        .difficulty-btn:hover:not(:disabled){transform:scale(1.05);box-shadow:0 0 15px rgba(0,212,255,.4)}
+        .difficulty-btn.active{background:linear-gradient(135deg,#00d4ff,#0099ff);color:#0a0a1a;border-color:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.6)}
+        .difficulty-btn:disabled{cursor:not-allowed;opacity:.6}
+        .difficulty-time{color:#b8c5d6;font-size:0.8rem;opacity:.9;min-width:70px}
+        .difficulty-label{color:#b8c5d6;font-size:0.75rem;text-align:center;margin-top:10px;opacity:.8}
+        @media (max-width: 800px) {
+            .game-wrapper{flex-direction:column}
+            .difficulty-panel{display:flex;flex-wrap:wrap;gap:10px;padding:10px;justify-content:center}
+            .difficulty-title{width:100%;margin-bottom:5px}
+            .difficulty-row{margin:3px}
+            .difficulty-label{width:100%;margin-top:5px}
+        }
     </style>
 </head>
 <body>
     <h1 class="title">Stock Atlantic Salmon</h1>
-    <div class="game-container">
-        <div class="board" id="board"></div>
+    <div class="game-wrapper">
+        <div class="game-container">
+            <div class="board" id="board"></div>
+        </div>
+        <div class="difficulty-panel" id="diffPanel">
+            <div class="difficulty-title">Depth</div>
+            <div class="difficulty-row">
+                <button class="difficulty-btn" data-level="1" onclick="setDifficulty(1)">1</button>
+                <span class="difficulty-time">~0.05s</span>
+            </div>
+            <div class="difficulty-row">
+                <button class="difficulty-btn" data-level="2" onclick="setDifficulty(2)">2</button>
+                <span class="difficulty-time">~0.1s</span>
+            </div>
+            <div class="difficulty-row">
+                <button class="difficulty-btn" data-level="3" onclick="setDifficulty(3)">3</button>
+                <span class="difficulty-time">~0.2s</span>
+            </div>
+            <div class="difficulty-row">
+                <button class="difficulty-btn" data-level="4" onclick="setDifficulty(4)">4</button>
+                <span class="difficulty-time">~1s</span>
+            </div>
+            <div class="difficulty-row">
+                <button class="difficulty-btn active" data-level="5" onclick="setDifficulty(5)">5</button>
+                <span class="difficulty-time">~2-3s</span>
+            </div>
+            <div class="difficulty-label">1=Easy 5=Hard</div>
+        </div>
     </div>
     <div class="status" id="status"></div>
 
@@ -40,17 +84,51 @@
     <script>
     (function(){
         let g = new Chess(), sWorker = null, sel = null, lastMv = null, overFlag = false, moveCount = 0;
+        let currentDifficulty = 5;
+        let gameStarted = false;
         const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
+
+        const depthTable = {
+            24: [6, 8, 9, 10, 11],
+            21: [7, 9, 10, 11, 12],
+            18: [8, 9, 10, 12, 13],
+            12: [8, 9, 11, 13, 14],
+            7: [8, 10, 12, 15, 16],
+            0: [8, 10, 15, 18, 18]
+        };
 
         function getAdaptiveDepth(){
             const fen = g.fen();
             const pieceCount = (fen.match(/[prnbqkPRNBQK]/g) || []).length;
-            if(pieceCount >= 24) return 11;
-            if(pieceCount >= 21) return 12;
-            if(pieceCount >= 18) return 13;
-            if(pieceCount >= 12) return 15;
-            if(pieceCount >= 7) return 16;
-            return 17;
+            let threshold;
+            if(pieceCount >= 24) threshold = 24;
+            else if(pieceCount >= 21) threshold = 21;
+            else if(pieceCount >= 18) threshold = 18;
+            else if(pieceCount >= 12) threshold = 12;
+            else if(pieceCount >= 7) threshold = 7;
+            else threshold = 0;
+            return depthTable[threshold][currentDifficulty - 1];
+        }
+
+        window.setDifficulty = function(level){
+            if(gameStarted) return;
+            currentDifficulty = level;
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if(parseInt(btn.dataset.level) === level) btn.classList.add('active');
+            });
+        };
+
+        function lockDifficulty(){
+            gameStarted = true;
+            document.getElementById('diffPanel').classList.add('locked');
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = true);
+        }
+
+        function unlockDifficulty(){
+            gameStarted = false;
+            document.getElementById('diffPanel').classList.remove('locked');
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
         }
 
         function init(){
@@ -87,12 +165,22 @@
                 return;
             }
             overFlag = true;
+            unlockDifficulty();
 
             if(g.in_checkmate()){
                 if(g.turn() === 'w'){
-                    setTimeout(()=>{ alert('the almighty atlantic salmon has outmanoeuvred you.'); resetGame(); }, 100);
+                    const msg = currentDifficulty === 5 
+                        ? `the level ${currentDifficulty} almighty atlantic salmon has outmanoeuvred you!`
+                        : `the level ${currentDifficulty} almighty atlantic salmon has outmanoeuvred you!`;
+                    setTimeout(()=>{ alert(msg); resetGame(); }, 100);
                 } else {
-                    setTimeout(()=>{ alert('you have defeated the almighty atlantic salmon. are you even human?'); resetGame(); }, 100);
+                    let msg;
+                    if(currentDifficulty === 5){
+                        msg = 'you have defeated the level 5 almighty atlantic salmon! are you even human?';
+                    } else {
+                        msg = `you have defeated the level ${currentDifficulty} almighty atlantic salmon! try level ${currentDifficulty + 1}?`;
+                    }
+                    setTimeout(()=>{ alert(msg); resetGame(); }, 100);
                 }
             } else if(g.in_stalemate()){
                 setTimeout(()=>{ alert('stale mate'); resetGame(); }, 100);
@@ -102,15 +190,16 @@
             updateStatus();
         }
 
-        function resetGame(){
+        window.resetGame = function(){
             g = new Chess();
             sel = null;
             lastMv = null;
             overFlag = false;
             moveCount = 0;
+            unlockDifficulty();
             render();
             updateStatus();
-        }
+        };
 
         function render(){
             const board = document.getElementById('board');
@@ -151,6 +240,11 @@
 
         function onClickSquare(sq){
             if(g.game_over() || g.turn() !== 'w') return;
+            
+            if(!gameStarted && !overFlag){
+                lockDifficulty();
+            }
+            
             const p = g.get(sq);
 
             if(p && p.color === 'w' && !sel){
@@ -195,4 +289,3 @@
     </script>
 </body>
 </html>
-
