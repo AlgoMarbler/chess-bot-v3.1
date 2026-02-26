@@ -8,7 +8,6 @@
         body{margin:0;height:100vh;width:100vw;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 50%,#0d1b2a 100%);font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;overflow:hidden;padding:10px;position:relative}
         body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle at 20% 50%,rgba(0,212,255,0.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(0,100,255,0.1) 0%,transparent 50%),radial-gradient(circle at 40% 20%,rgba(0,150,255,0.05) 0%,transparent 50%);pointer-events:none}
         .title{font-size:clamp(1.5rem,5vw,3rem);font-weight:900;text-transform:uppercase;letter-spacing:.15em;background:linear-gradient(90deg,#00d4ff,#0099ff,#00d4ff);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 30px rgba(0,212,255,.5);margin-bottom:1rem;animation:shimmer 3s linear infinite;z-index:1;text-align:center}
-        .title .level{display:block;font-size:0.5em;opacity:0.8;letter-spacing:0.2em;margin-top:0.3em}
         @keyframes shimmer{to{background-position:200% center}}
         .game-container{position:relative;z-index:1;padding:10px;background:rgba(0,0,0,.3);border-radius:10px;border:1px solid rgba(0,212,255,.2);box-shadow:0 0 50px rgba(0,100,255,.2),inset 0 0 50px rgba(0,0,0,.5)}
         .board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:85vmin;height:85vmin;max-width:600px;max-height:600px;border:3px solid rgba(0,212,255,.5);box-shadow:0 0 30px rgba(0,100,255,.3),0 0 60px rgba(0,50,150,.2)}
@@ -30,25 +29,27 @@
         .difficulty-panel{position:fixed;right:20px;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.3);border-radius:10px;padding:15px;box-shadow:0 0 30px rgba(0,100,255,.2);z-index:10;transition:opacity .3s ease}
         .difficulty-panel.locked{opacity:.5;pointer-events:none}
         .difficulty-title{color:#00d4ff;font-size:1rem;font-weight:bold;text-align:center;margin-bottom:15px;text-transform:uppercase;letter-spacing:0.1em;text-shadow:0 0 10px rgba(0,212,255,.5)}
-        .difficulty-btn{display:block;width:50px;height:50px;margin:8px 0;border:2px solid rgba(0,212,255,.5);background:rgba(0,0,0,.3);color:#00d4ff;font-size:1.2rem;font-weight:bold;cursor:pointer;border-radius:8px;transition:all .3s ease}
+        .difficulty-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .difficulty-btn{width:50px;height:50px;border:2px solid rgba(0,212,255,.5);background:rgba(0,0,0,.3);color:#00d4ff;font-size:1.2rem;font-weight:bold;cursor:pointer;border-radius:8px;transition:all .3s ease}
         .difficulty-btn:hover:not(:disabled){transform:scale(1.05);box-shadow:0 0 15px rgba(0,212,255,.4)}
         .difficulty-btn.active{background:linear-gradient(135deg,#00d4ff,#0099ff);color:#0a0a1a;border-color:#00d4ff;box-shadow:0 0 20px rgba(0,212,255,.6)}
         .difficulty-btn:disabled{cursor:not-allowed;opacity:.6}
-        .difficulty-label{color:#b8c5d6;font-size:0.7rem;text-align:center;margin-top:10px;opacity:.8;line-height:1.4}
+        .difficulty-btn.level-6{border-color:rgba(255,50,50,.8);background:rgba(50,0,0,.4);color:#ff4444;text-shadow:0 0 10px rgba(255,68,68,.8),0 0 20px rgba(255,0,0,.5)}
+        .difficulty-btn.level-6:hover:not(:disabled){box-shadow:0 0 20px rgba(255,68,68,.6),0 0 40px rgba(255,0,0,.3)}
+        .difficulty-btn.level-6.active{background:linear-gradient(135deg,#ff4444,#cc0000);color:#fff;border-color:#ff6666;box-shadow:0 0 25px rgba(255,68,68,.8),0 0 50px rgba(255,0,0,.4)}
+        .difficulty-label{color:#b8c5d6;font-size:0.7rem;text-align:center;margin-top:12px;opacity:.8;line-height:1.4}
         @media (max-width: 900px) {
-            .difficulty-panel{right:10px;padding:10px}
-            .difficulty-btn{width:40px;height:40px;font-size:1rem;margin:5px 0}
+            .difficulty-panel{right:10px;padding:12px}
+            .difficulty-btn{width:45px;height:45px;font-size:1.1rem}
         }
         @media (max-width: 700px) {
-            .difficulty-panel{position:static;transform:none;margin-top:15px;display:flex;gap:10px;padding:10px;align-items:center}
-            .difficulty-title{margin-bottom:0;margin-right:10px;font-size:0.9rem}
-            .difficulty-btn{margin:0}
-            .difficulty-label{display:none}
+            .difficulty-panel{position:static;transform:none;margin-top:15px}
+            .difficulty-title{margin-bottom:10px}
         }
     </style>
 </head>
 <body>
-    <h1 class="title" id="mainTitle">Stock Atlantic Salmon<span class="level" id="levelDisplay" style="display:none"></span></h1>
+    <h1 class="title" id="mainTitle">Stock Atlantic Salmon</h1>
     <div class="game-container">
         <div class="board" id="board"></div>
     </div>
@@ -56,12 +57,15 @@
 
     <div class="difficulty-panel" id="diffPanel">
         <div class="difficulty-title">Level</div>
-        <button class="difficulty-btn" data-level="1" onclick="setDifficulty(1)">1</button>
-        <button class="difficulty-btn" data-level="2" onclick="setDifficulty(2)">2</button>
-        <button class="difficulty-btn" data-level="3" onclick="setDifficulty(3)">3</button>
-        <button class="difficulty-btn" data-level="4" onclick="setDifficulty(4)">4</button>
-        <button class="difficulty-btn active" data-level="5" onclick="setDifficulty(5)">5</button>
-        <div class="difficulty-label">1 = light work!<br>5 = the salmon makes light work of you</div>
+        <div class="difficulty-grid">
+            <button class="difficulty-btn" data-level="1" onclick="setDifficulty(1)">1</button>
+            <button class="difficulty-btn" data-level="2" onclick="setDifficulty(2)">2</button>
+            <button class="difficulty-btn" data-level="3" onclick="setDifficulty(3)">3</button>
+            <button class="difficulty-btn" data-level="4" onclick="setDifficulty(4)">4</button>
+            <button class="difficulty-btn" data-level="5" onclick="setDifficulty(5)">5</button>
+            <button class="difficulty-btn level-6" data-level="6" onclick="setDifficulty(6)">6</button>
+        </div>
+        <div class="difficulty-label">1 = you cook the salmon<br>6 = the salmon cooks you</div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
@@ -74,12 +78,12 @@
         const PIE = {w:{k:'♔',q:'♕',r:'♖',b:'♗',n:'♘',p:'♙'}, b:{k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'}};
 
         const depthTable = {
-            24: [6, 8, 9, 10, 11],
-            21: [7, 9, 10, 11, 12],
-            18: [8, 9, 10, 12, 13],
-            12: [8, 9, 11, 13, 14],
-            7: [8, 10, 12, 15, 16],
-            0: [8, 10, 15, 18, 18]
+            24: [4, 5, 7, 10, 11, 14],
+            21: [4, 5, 9, 11, 12, 15],
+            18: [4, 6, 9, 12, 13, 16],
+            12: [4, 6, 10, 13, 14, 17],
+            7: [4, 7, 10, 14, 15, 18],
+            0: [4, 8, 10, 15, 16, 18]
         };
 
         function getAdaptiveDepth(){
@@ -108,15 +112,12 @@
             gameStarted = true;
             document.getElementById('diffPanel').classList.add('locked');
             document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = true);
-            document.getElementById('levelDisplay').textContent = '(level ' + currentDifficulty + ')';
-            document.getElementById('levelDisplay').style.display = 'block';
         }
 
         function unlockDifficulty(){
             gameStarted = false;
             document.getElementById('diffPanel').classList.remove('locked');
             document.querySelectorAll('.difficulty-btn').forEach(btn => btn.disabled = false);
-            document.getElementById('levelDisplay').style.display = 'none';
         }
 
         function init(){
@@ -161,8 +162,8 @@
                     setTimeout(()=>{ alert(msg); resetGame(); }, 100);
                 } else {
                     let msg;
-                    if(currentDifficulty === 5){
-                        msg = 'you have defeated the level 5 almighty atlantic salmon! are you even human?';
+                    if(currentDifficulty === 6){
+                        msg = 'you have defeated the level 6 almighty atlantic salmon! are you even human?';
                     } else {
                         msg = `you have defeated the level ${currentDifficulty} almighty atlantic salmon! try level ${currentDifficulty + 1}?`;
                     }
